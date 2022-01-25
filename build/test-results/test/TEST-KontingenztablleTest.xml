@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="KontingenztablleTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2022-01-25T17:03:11" hostname="HSEMAC5220.fritz.box" time="0.054">
+<testsuite name="KontingenztablleTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2022-01-25T17:03:52" hostname="HSEMAC5220.fritz.box" time="0.049">
   <properties/>
-  <testcase name="test1()" classname="KontingenztablleTest" time="0.045"/>
-  <testcase name="test2()" classname="KontingenztablleTest" time="0.004"/>
+  <testcase name="test1()" classname="KontingenztablleTest" time="0.042"/>
+  <testcase name="test2()" classname="KontingenztablleTest" time="0.003"/>
   <testcase name="test3()" classname="KontingenztablleTest" time="0.003"/>
   <system-out><![CDATA[ACTUAL
 ______________________________________
@@ -20,10 +20,10 @@ ______________________________________
 
 Odds Ratio:    8.2727272727 (Gegen 1 heißt unabhängig, weiter weg heißt abhängig!)
 Chi^2:         23.188405797100
-Cramer         0.481543412343
-Pearson        0.433860915638
-PearsonKorr    0.613571991078
-PearsonMax     0.707106781187
+Cramer:        0.481543412343
+Pearson:       0.433860915638
+PearsonKorr:   0.613571991078
+PearsonMax:    0.707106781187
 ===============================================
 ACTUAL
 ______________________________________
@@ -41,10 +41,10 @@ ______________________________________
 
 Odds Ratio:    15.2474916388 (Gegen 1 heißt unabhängig, weiter weg heißt abhängig!)
 Chi^2:         83.390103881903
-Cramer         0.589456331016
-Pearson        0.507801400724
-PearsonKorr    0.718139627895
-PearsonMax     0.707106781187
+Cramer:        0.589456331016
+Pearson:       0.507801400724
+PearsonKorr:   0.718139627895
+PearsonMax:    0.707106781187
 ===============================================
 ACTUAL
 ______________________________________
@@ -62,10 +62,10 @@ ______________________________________
 
 Odds Ratio:    Table is not of size 2. Can not be calculated.
 Chi^2:         1.904761904763
-Cramer         0.13801311187
-Pearson        0.136717185405
-PearsonKorr    0.193347297809
-PearsonMax     0.707106781187
+Cramer:        0.13801311187
+Pearson:       0.136717185405
+PearsonKorr:   0.193347297809
+PearsonMax:    0.707106781187
 ===============================================
 ]]></system-out>
   <system-err><![CDATA[]]></system-err>

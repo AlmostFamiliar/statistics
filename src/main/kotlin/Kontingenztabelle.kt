@@ -31,7 +31,7 @@ fun calc(table: List<List<Int>>) {
 
     val pearsonKorr = pearson.divide(pearsonMax, 12, RoundingMode.HALF_UP)
     println(msgFormat.format("PearsonKorr:", pearsonKorr))
-    println(msgFormat.format("PearsonMax:", pearsonMax))
+    // println(msgFormat.format("(PearsonMax:)", pearsonMax))
 
     println("===============================================")
 }
