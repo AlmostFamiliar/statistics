@@ -1,33 +1,60 @@
 import java.math.BigDecimal
+import java.math.MathContext
 import java.math.RoundingMode
 
 fun calc(table: List<List<Int>>) {
-    val f1k = table[0][0] + table[1][0]
-    val f2k = table[0][1] + table[1][1]
-    val fj1 = table[0][0] + table[0][1]
-    val fj2 = table[1][0] + table[1][1]
-    val n = f1k + f2k
-    assert(n == fj1 + fj2)
-
     val actual = calcRandhaeufigkeiten(table)
     printTable("ACTUAL", actual)
 
     val expected = calcExpected(actual)
     printTable("EXPECTED", expected)
 
-    val msgFormat = "%-25s%s"
+    val msgFormat = "%-15s%s"
     if (table.size == 2 && table[0].size == 2) {
         val oddsRatio = oddsRatio(actual)
-        println(msgFormat.format("Odds Ratio:", oddsRatio.toString()))
+        println(msgFormat.format("Odds Ratio:", "$oddsRatio (Gegen 1 heißt unabhängig, weiter weg heißt abhängig!)"))
     } else {
         println(msgFormat.format("Odds Ratio:", "Table is not of size 2. Can not be calculated."))
     }
 
-    // val chi2 = calcChi2(actual, expected)
+    val chi2 = calcChi2(actual, expected)
+    println(msgFormat.format("Chi^2:", chi2))
 
-    // println(msgFormat.format("X^2:", chi2.toString()))
-    print("(Gegen 1 heißt unabhängig, weiter weg heißt abhängig!)\n")
+    val cramer = calcCramer(chi2, expected)
+    println(msgFormat.format("Cramer:", cramer))
+
+    val pearson = calcPearson(chi2, expected)
+    println(msgFormat.format("Pearson:", pearson))
+
+
+    val pearsonMax = calcPearsonMax(expected)
+
+    val pearsonKorr = pearson.divide(pearsonMax, 12, RoundingMode.HALF_UP)
+    println(msgFormat.format("PearsonKorr:", pearsonKorr))
+    println(msgFormat.format("PearsonMax:", pearsonMax))
+
     println("===============================================")
+}
+
+fun calcPearsonMax(expected: List<List<BigDecimal>>): BigDecimal {
+    val min = BigDecimal(Math.min(expected.size - 1, expected[0].size - 1))
+
+    return min.minus(BigDecimal.ONE).divide(min, 12, RoundingMode.HALF_UP).sqrt(MathContext(12))
+}
+
+fun calcPearson(chi2: BigDecimal, expected: List<List<BigDecimal>>): BigDecimal {
+    val n = expected[expected.size - 1][expected[0].size - 1]
+    val nenner = chi2.plus(n)
+    val bruch = chi2.divide(nenner, 12, RoundingMode.HALF_UP)
+    return bruch.sqrt(MathContext(12))
+}
+
+fun calcCramer(chi2: BigDecimal, expected: List<List<BigDecimal>>): BigDecimal {
+    val n = expected[expected.size - 1][expected[0].size - 1]
+    val min = Math.min(expected.size - 1, expected[0].size - 1) - 1
+    val nenner = n.multiply(BigDecimal(min))
+    val bruch = chi2.divide(nenner, 12, RoundingMode.HALF_UP)
+    return bruch.sqrt(MathContext(12))
 }
 
 private fun calcRandhaeufigkeiten(
@@ -62,12 +89,12 @@ private fun calcRandhaeufigkeiten(
     return completeTable
 }
 
-fun calcChi2(actual: List<List<Int>>, expected: List<List<Int>>): BigDecimal {
+fun calcChi2(actual: List<List<Int>>, expected: List<List<BigDecimal>>): BigDecimal {
     var sum = BigDecimal.ZERO.setScale(12)
     for (i in actual.indices) {
         for (j in expected.indices) {
-            val difference = actual[i][j] - expected[i][j]
-            sum += BigDecimal(difference * difference).divide(BigDecimal(expected[i][j]), 12, RoundingMode.HALF_UP)
+            val difference = BigDecimal(actual[i][j]).minus(expected[i][j])
+            sum += difference.multiply(difference).divide(expected[i][j], 12, RoundingMode.HALF_UP)
         }
     }
     return sum
@@ -81,7 +108,7 @@ fun oddsRatio(table: List<List<Int>>): BigDecimal {
 
 fun calcExpected(table: List<List<Int>>): List<List<BigDecimal>> {
     val expectedTable = copyList(table)
-    for (i in 0 until table.size -1 ) {
+    for (i in 0 until table.size - 1) {
         for (j in 0 until table[0].size - 1) {
             val fj = table[i][table[0].size - 1]
             val fk = table[table.size - 1][j]
@@ -111,7 +138,7 @@ fun printTable(title: String, table: List<List<Any>>) {
     println("______________________________________")
     table.forEach {
         var line = "| "
-        it.forEach{ el ->
+        it.forEach { el ->
             line += "%5s | ".format(el)
         }
         println(line)
