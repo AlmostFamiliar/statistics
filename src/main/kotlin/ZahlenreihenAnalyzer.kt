@@ -1,5 +1,6 @@
 import java.math.BigDecimal
 import java.math.BigDecimal.ROUND_HALF_UP
+import java.math.RoundingMode
 
 const val SCALE = 12
 const val ROUNDING_MODE = BigDecimal.ROUND_HALF_DOWN
@@ -27,7 +28,7 @@ fun arithmetischesMittel(numbers: List<BigDecimal>): BigDecimal {
     for (number in numbers) {
         sum = sum.plus(number)
     }
-    return sum.divide(BigDecimal(numbers.size), BigDecimal.ROUND_HALF_UP)
+    return sum.divide(BigDecimal(numbers.size), 12, RoundingMode.HALF_UP)
 }
 
 fun geometischesMittel(numbers: List<BigDecimal>): BigDecimal {
@@ -80,7 +81,7 @@ fun median(numbers: List<BigDecimal>): BigDecimal {
     val median = if (testSetSize % 2 == 0) {
         val lower = numbers[(testSetSize - 1) / 2]
         val upper = numbers[(testSetSize - 1) / 2 + 1]
-        lower.plus(upper).divide(BigDecimal(2))
+        lower.plus(upper).divide(BigDecimal(2), 12, RoundingMode.HALF_UP)
     } else {
         numbers[testSetSize / 2]
     }

@@ -10,21 +10,30 @@ fun calc(table: List<List<Int>>) {
     printTable("EXPECTED", expected)
 
     val msgFormat = "%-15s%s"
-    if (table.size == 2 && table[0].size == 2) {
-        val oddsRatio = oddsRatio(actual)
-        println(msgFormat.format("Odds Ratio:", "$oddsRatio (Gegen 1 heißt unabhängig, weiter weg heißt abhängig!)"))
-    } else {
-        println(msgFormat.format("Odds Ratio:", "Table is not of size 2. Can not be calculated."))
+    try {
+        if (table.size == 2 && table[0].size == 2) {
+            val oddsRatio = oddsRatio(actual)
+            println(
+                msgFormat.format(
+                    "Odds Ratio:",
+                    "$oddsRatio (Gegen 1 heißt unabhängig, weiter weg heißt abhängig!)"
+                )
+            )
+        } else {
+            println(msgFormat.format("Odds Ratio:", "Table is not of size 2. Can not be calculated."))
+        }
+    } catch (e: Exception) {
+        println(msgFormat.format("Odds Ratio:", e.message))
     }
 
     val chi2 = calcChi2(actual, expected)
-    println(msgFormat.format("Chi^2:", chi2))
+    println(msgFormat.format("Chi^2:", chi2.toPlainString()))
 
     val cramer = calcCramer(chi2, expected)
-    println(msgFormat.format("Cramer:", cramer))
+    println(msgFormat.format("Cramer:", "$cramer (0 kein Zusammenhang / 1 starke Abhängigkeit)"))
 
     val pearson = calcPearson(chi2, expected)
-    println(msgFormat.format("Pearson:", pearson))
+    println(msgFormat.format("Pearson:", pearson.toPlainString()))
 
 
     val pearsonMax = calcPearsonMax(expected)
@@ -103,7 +112,7 @@ fun calcChi2(actual: List<List<Int>>, expected: List<List<BigDecimal>>): BigDeci
 fun oddsRatio(table: List<List<Int>>): BigDecimal {
     val ad = BigDecimal(table[0][0]).multiply(BigDecimal(table[1][1])).setScale(10)
     val bc = BigDecimal(table[1][0]).multiply(BigDecimal(table[0][1])).setScale(10)
-    return ad.divide(bc, BigDecimal.ROUND_HALF_UP)
+    return ad.divide(bc, 12, RoundingMode.HALF_UP)
 }
 
 fun calcExpected(table: List<List<Int>>): List<List<BigDecimal>> {
@@ -113,7 +122,9 @@ fun calcExpected(table: List<List<Int>>): List<List<BigDecimal>> {
             val fj = table[i][table[0].size - 1]
             val fk = table[table.size - 1][j]
             val n = BigDecimal(table[table.size - 1][table[0].size - 1])
-            expectedTable[i][j] = BigDecimal(fj * fk).divide(n, RoundingMode.HALF_UP)
+            val nenner = BigDecimal(fj * fk)
+            val expected = nenner.divide(n, 12, RoundingMode.HALF_UP)
+            expectedTable[i][j] = expected
         }
     }
     return expectedTable

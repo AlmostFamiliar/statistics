@@ -31,4 +31,24 @@ class KontingenztablleTest {
             )
         )
     }
+
+    @Test
+    fun test4() {
+        calc(
+            listOf(
+                listOf(1, 0),
+                listOf(0, 1)
+            )
+        )
+    }
+
+    @Test
+    fun test5() {
+        calc(
+            listOf(
+                listOf(1, 3),
+                listOf(3, 5)
+            )
+        )
+    }
 }
